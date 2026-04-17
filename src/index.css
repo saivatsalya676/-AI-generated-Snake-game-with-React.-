@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Press Start 2P", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "VT323", ui-monospace, SFMono-Regular, monospace;
+  --color-cyan: #00FFFF;
+  --color-magenta: #FF00FF;
+  --color-bg: #0a0a0a;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-cyan);
+  margin: 0;
+  /* Hard CRT Scanlines */
+  background-image: linear-gradient(
+    transparent 50%,
+    rgba(0, 0, 0, 0.9) 50%
+  );
+  background-size: 100% 4px;
+  -webkit-font-smoothing: none;
+  overflow-x: hidden;
+}
+
+/* Screen tearing effect */
+@keyframes screen-tear {
+  0% { transform: translateX(0); }
+  5% { transform: translateX(-4px) skewX(2deg); filter: hue-rotate(90deg); }
+  7% { transform: translateX(0) skewX(0); filter: hue-rotate(0deg); }
+  50% { transform: translateX(0); }
+  52% { transform: translateX(4px) skewX(-2deg); }
+  55% { transform: translateX(0); }
+  100% { transform: translateX(0); }
+}
+
+.animate-screen-tear {
+  animation: screen-tear 3.5s infinite reverse;
+}
+
+/* Static Noise Overlay */
+.static-noise {
+  position: relative;
+}
+.static-noise::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+  opacity: 0.12;
+  mix-blend-mode: screen;
+}
+
+/* Chromatic Aberration / Glitch Text */
+.glitch-text {
+  position: relative;
+  display: inline-block;
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+  pointer-events: none;
+}
+.glitch-text::before {
+  color: var(--color-magenta);
+  z-index: -1;
+  animation: glitch-anim 2s infinite linear alternate-reverse;
+}
+.glitch-text::after {
+  color: var(--color-cyan);
+  z-index: -2;
+  animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% { clip-path: inset(20% 0 80% 0); transform: translate(-4px, 1px); }
+  20% { clip-path: inset(60% 0 10% 0); transform: translate(4px, -1px); }
+  40% { clip-path: inset(40% 0 50% 0); transform: translate(-4px, 2px); }
+  60% { clip-path: inset(80% 0 5% 0); transform: translate(4px, -1px); }
+  80% { clip-path: inset(10% 0 70% 0); transform: translate(-4px, 1px); }
+  100% { clip-path: inset(30% 0 50% 0); transform: translate(4px, -2px); }
+}
+
+@keyframes glitch-anim-2 {
+  0% { clip-path: inset(10% 0 60% 0); transform: translate(4px, -1px); }
+  20% { clip-path: inset(30% 0 20% 0); transform: translate(-4px, 1px); }
+  40% { clip-path: inset(70% 0 10% 0); transform: translate(4px, -2px); }
+  60% { clip-path: inset(20% 0 50% 0); transform: translate(-4px, 1px); }
+  80% { clip-path: inset(90% 0 5% 0); transform: translate(4px, -1px); }
+  100% { clip-path: inset(5% 0 80% 0); transform: translate(-4px, 2px); }
+}
+
+/* Hard edges, no rounded corners in the retro-future */
+* {
+  border-radius: 0 !important;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 14px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg); 
+  border-left: 2px solid var(--color-cyan);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-magenta); 
+  border: 2px solid var(--color-bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-cyan); 
+}
